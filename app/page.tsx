@@ -102,6 +102,8 @@ export default function Home() {
         </motion.div>
       </div>
       <FeatureBentoGrid />
+
+      
     </div>
   );
 }
