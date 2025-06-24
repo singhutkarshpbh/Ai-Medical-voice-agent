@@ -1,4 +1,5 @@
 import React from 'react'
+import AppHeader from './_components/AppHeader';
 
 function DashboardLayout({
   children,
@@ -6,7 +7,10 @@ function DashboardLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div>{children}</div>
+    <div>
+      <AppHeader />
+      <div className='px-10 md:px-20 lg:px-40'> {children} </div>
+      </div>
   )
 }
 
