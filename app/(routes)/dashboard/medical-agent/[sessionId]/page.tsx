@@ -23,6 +23,9 @@ function MedicalVoiceAgent() {
   const [sessionDetails, setSessionDetails] = useState<SessionDetail | null>(null);
   const [callStarted, setCallStarted] = useState(false);
   const [vapi, setVapi] = useState<Vapi | null>(null);
+  const [currentRoll , setCurrentRoll] = useState<string>();
+  const [liveTranscript,setLiveTranscript] = useState<string>();
+
 
   useEffect(() => {
     if (process.env.NEXT_PUBLIC_VAPI_API_KEY) {
@@ -62,8 +65,27 @@ function MedicalVoiceAgent() {
 
     vapi.on("message", (message) => {
       if (message.type === "transcript") {
+        const {role,transcriptType , transcript} = message;
+
         console.log(`${message.role}: ${message.transcript}`);
+        if(transcriptType == 'partial') {
+        setLiveTranscript(transcript);
+        setCurrentRoll(role);
+        }
+        else{
+          //final transcript 
+          
+        }
       }
+    });
+
+    vapi.on('speech-start', () => {
+      console.log('Assistant started speaking');
+      setCurrentRoll('assistant');
+    });
+    vapi.on('speech-end', () => {
+      console.log('Assistant stopped speaking');
+      setCurrentRoll('user');
     });
 
     vapi.start(process.env.NEXT_PUBLIC_VAPI_VOICE_ASSISTANT_ID);
