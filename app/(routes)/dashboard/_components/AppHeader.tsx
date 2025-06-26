@@ -7,7 +7,7 @@ const menuOptions = [
     {
         id:1,
         name:'Home',
-        path:'/home'
+        path:'/dashboard'
     },
     {
         id:2,
@@ -17,12 +17,12 @@ const menuOptions = [
     {
         id:3,
         name:'Pricing',
-        path:'/pricing'
+        path:'/dashboard/billing'
     },
     {
         id:4,
         name:'Profile',
-        path:'/profile'
+        path:'/dashboard/profile'
     }
 ]
 

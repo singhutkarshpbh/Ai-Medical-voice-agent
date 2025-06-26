@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import DoctorAgentCard , {doctorAgent} from './DoctorAgentCard'
 import {
   Dialog,
@@ -18,14 +18,33 @@ import { ArrowRight, Loader, Loader2 } from 'lucide-react'
 import axios from 'axios'
 import SuggestedDoctorCard from './SuggestedDoctorCard'
 import { useRouter } from 'next/navigation'
+import { useAuth } from '@clerk/nextjs'
+import { SessionDetail } from '../medical-agent/[sessionId]/page'
+
+
+
+
 
 function AddNewSessionDialog() {
     const [note,setNote] = useState<string>();
     const [loading,setLoading] = useState(false);
-    const [suggestedDoctors,setSuggestedDoctors] = useState<doctorAgent[]>()
+const [suggestedDoctors, setSuggestedDoctors] = useState<doctorAgent[]>([])
     const [selectedDoctor, setSelectedDoctor] = useState<doctorAgent | null>(null);
     const router = useRouter();
+    const [historyList,setHistoryList] = useState<SessionDetail[]>([])
+    const {has} = useAuth();
+     //ts-ignore
+    const paidUser =has&&has({plan:'pro'})
 
+    useEffect(()=>{
+    GetHistoryList()
+;  },[])
+
+  const GetHistoryList = async()=>{
+    const result = await axios.get('/api/session-chat?sessionId=all')
+    console.log(result.data);
+    setHistoryList(result.data);
+  }
     const OnClickNext = async ()=> {
       setLoading(true);
       const result = await axios.post('/api/suggest-doctors' , {
@@ -55,7 +74,7 @@ function AddNewSessionDialog() {
   return (
     <Dialog>
   <DialogTrigger>
-    <Button className='mt-3'>+ Start a Consultation</Button>
+    <Button className='mt-3' disabled={!paidUser && historyList.length>1}>+ Start a Consultation</Button>
   </DialogTrigger>
   <DialogContent>
     <DialogHeader>
