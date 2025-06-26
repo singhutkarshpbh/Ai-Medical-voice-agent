@@ -23,8 +23,7 @@ function AddNewSessionDialog() {
     const [note,setNote] = useState<string>();
     const [loading,setLoading] = useState(false);
     const [suggestedDoctors,setSuggestedDoctors] = useState<doctorAgent[]>()
-    const [selectedDoctor, setSelectedDoctor] = useState<doctorAgent[]>();
-
+    const [selectedDoctor, setSelectedDoctor] = useState<doctorAgent | null>(null);
     const router = useRouter();
 
     const OnClickNext = async ()=> {

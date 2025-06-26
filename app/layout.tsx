@@ -33,13 +33,16 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider>
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        <Provider> {children} </Provider>
-      </body>
-    </html>
+      <html lang="en" suppressHydrationWarning>
+        <body
+          suppressHydrationWarning={true} // ✅ Suppress mismatch warnings
+          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        >
+          <Provider>
+            {children}
+          </Provider>
+        </body>
+      </html>
     </ClerkProvider>
   );
 }

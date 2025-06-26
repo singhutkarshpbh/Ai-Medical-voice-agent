@@ -9,7 +9,7 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import Vapi from "@vapi-ai/web";
 
-type SessionDetail = {
+export type SessionDetail = {
   id: number;
   notes: string;
   sessionId: string;
@@ -18,13 +18,20 @@ type SessionDetail = {
   createdOn: string;
 };
 
+type messages ={
+  role:string,
+  text:string,
+}
+
 function MedicalVoiceAgent() {
   const { sessionId } = useParams();
   const [sessionDetails, setSessionDetails] = useState<SessionDetail | null>(null);
   const [callStarted, setCallStarted] = useState(false);
   const [vapi, setVapi] = useState<Vapi | null>(null);
-  const [currentRoll , setCurrentRoll] = useState<string>();
+  const [currentRoll , setCurrentRoll] = useState<string | null>();
   const [liveTranscript,setLiveTranscript] = useState<string>();
+  const [messages,setMessages] = useState<messages[]>([]);
+
 
 
   useEffect(() => {
@@ -72,9 +79,12 @@ function MedicalVoiceAgent() {
         setLiveTranscript(transcript);
         setCurrentRoll(role);
         }
-        else{
+        else if(transcriptType == 'final'){
           //final transcript 
-          
+          setMessages((prev:any) => [...prev,{role:role,text:transcript}])
+          setLiveTranscript("");
+          setCurrentRoll(null);
+
         }
       }
     });
@@ -114,9 +124,13 @@ function MedicalVoiceAgent() {
           </h2>
           <p className="text-sm text-gray-400">AI medical Voice Agent</p>
 
-          <div className="mt-32">
-            <h2 className="text-gray-400">Assistant Msg</h2>
-            <h2 className="text-lg">User Msg</h2>
+          <div className="mt-32 overflow-y-auto">
+            {messages?.map((msg:messages,index)=>(
+             
+                <h2 className="text-gray-400" key = {index}>{msg.role}: {msg.text}</h2>
+      
+            ))}
+            {liveTranscript&&liveTranscript?.length > 0 && <h2 className="text-lg">{currentRoll }:{liveTranscript}</h2> }
           </div>
 
           {!callStarted ? (
